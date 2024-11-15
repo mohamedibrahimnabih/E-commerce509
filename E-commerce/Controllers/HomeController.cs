@@ -9,8 +9,6 @@ namespace E_commerce.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private ApplicationDbContext _context = new ApplicationDbContext();
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -18,8 +16,7 @@ namespace E_commerce.Controllers
 
         public IActionResult Index()
         {
-            var products = _context.Products.ToList();
-            return View(products);
+            return View();
         }
 
         public IActionResult Privacy()
