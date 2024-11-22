@@ -1,4 +1,13 @@
-﻿<div class="row mb-2">
+﻿@* @section Scripts { *@
+
+@*     <script> *@
+@*         toastr.success('Add Category successfuly') *@
+@*     </script> *@
+@* } *@
+
+
+
+<div class="row mb-2">
     <div class="col-9">
         <h1>All Categories</h1>
     </div>
@@ -13,31 +22,68 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Category Name</th>
-                <th scope="col">Number of prdouct</th>
+                <th scope="col">Number of Products</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @* @foreach (var item in Model) *@
-            @* { *@
-            @*     <tr class="table-light"> *@
-            @*         <th scope="row">@item.Id</th> *@
-            @*         <td>@item.Name</td> *@
-            @*         <td>@item.Products.Count</td> *@
-            @*     </tr> *@
-            @* } *@
-
-            @for (int i = 0; i < Model.Count; i++) {
-                    <tr class="table-light">
-                        <th scope="row">@(i+1)</th>
-                        <th scope="row">@Model[i].Name</th>
-                        <th scope="row">@Model[i].Products.Count</th>
-                    <th scope="row">
-                        <a href="/Category/Edit?categoryId=@Model[i].Id" type="button" class="btn btn-success"><i class="bi bi-pencil-square"></i> Edit</a>
-                        <button type="button" class="btn btn-primary"><i class="bi bi-trash"></i> Delete</button>
-                    </th>
-                     </tr>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr class="table-light">
+                    <th scope="row">@(i + 1)</th>
+                    <td>@Model[i].Name</td>
+                    <td>@Model[i].Products.Count</td>
+                    <td>
+                        <a href="/Category/Edit?categoryId=@Model[i].Id" class="btn btn-success">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <button type="button" class="btn btn-primary delete-btn"
+                                data-category-id="@Model[i].Id"
+                                data-category-name="@Model[i].Name"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the category <strong id="modalCategoryName"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Attach event listener to all delete buttons
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const categoryId = this.getAttribute('data-category-id');
+            const categoryName = this.getAttribute('data-category-name');
+
+            // Set the category name in the modal
+            document.getElementById('modalCategoryName').textContent = categoryName;
+
+            // Update the delete link to include the categoryId
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            confirmDeleteBtn.href = `/Category/Delete?categoryId=${categoryId}`;
+        });
+    });
+</script>
