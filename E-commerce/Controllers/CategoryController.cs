@@ -1,4 +1,5 @@
 ﻿using E_commerce.Data;
+using E_commerce.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,15 +28,19 @@ namespace E_commerce.Controllers
             return View();
         }
 
-        public IActionResult CreateNew(string name)
+        [HttpPost]
+        public IActionResult Create(string name)
         {
             dbContext.Categories.Add(new()
             {
                 Name = name
             });
+
             dbContext.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
+
+        
     }
 }
