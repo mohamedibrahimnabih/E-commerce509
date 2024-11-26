@@ -1,0 +1,39 @@
+﻿<div class="row mb-2">
+    <h1><a href="/Product/Index"><i class="bi bi-arrow-left"></i></a> Create New Product</h1>
+</div>
+
+<div class="row">
+    <form action="/Product/Create" method="post">
+        <div class="mb-3">
+            <input type="text" class="form-control" id="productName" name="Name" placeholder="Product Name">
+        </div>
+
+        <div class="mb-3">
+            <input type="text" class="form-control" id="productDescription" name="Description" placeholder="Product Description">
+        </div>
+
+        <div class="mb-3">
+            <input type="number" class="form-control" id="productPrice" name="Price" placeholder="Product Price">
+        </div>
+
+        <div class="mb-3">
+            <input type="text" class="form-control" id="productImg" name="Img" placeholder="Product Img">
+        </div>
+
+        <div class="mb-3">
+            <input type="number" class="form-control" id="productQuantity" name="Quantity" placeholder="Product Quantity">
+        </div>
+
+        <div class="mb-3">
+            @* <input type="text" class="form-control" id="productCategory" name="CategoryId" placeholder="Product Category"> *@
+
+            <select class="form-select">
+                @foreach (var item in ViewBag.Categories)
+                {
+                    <option>@item.Name</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>

@@ -38,6 +38,8 @@ namespace E_commerce.Controllers
 
             dbContext.SaveChanges();
 
+            TempData["success"] = "Add Category successfuly";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -67,6 +69,8 @@ namespace E_commerce.Controllers
 
             dbContext.SaveChanges();
 
+            TempData["success"] = "Update Category successfuly";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -77,6 +81,9 @@ namespace E_commerce.Controllers
             {
                 dbContext.Categories.Remove(category);
                 dbContext.SaveChanges();
+
+                TempData["success"] = "Delete Category successfuly";
+
                 return RedirectToAction(nameof(Index));
             }
 

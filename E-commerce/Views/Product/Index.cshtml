@@ -1,18 +1,11 @@
-﻿@section Scripts {
-
-    @if (@TempData["success"] != null) {
-        <script>
-            toastr.success('@TempData["success"]')
-        </script>
-    }
-}
+﻿@model List<Product>
 
 <div class="row mb-2">
     <div class="col-9">
-        <h1>All Categories</h1>
+        <h1>All Products</h1>
     </div>
     <div class="col-3">
-        <a href="/Category/Create" class="btn btn-danger"><i class="bi bi-plus-circle"></i> Create new category</a>
+        <a href="/Product/Create" class="btn btn-danger"><i class="bi bi-plus-circle"></i> Create new product</a>
     </div>
 </div>
 
@@ -21,8 +14,10 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Product Price</th>
+                <th scope="col">Quantity</th>
                 <th scope="col">Category Name</th>
-                <th scope="col">Number of Products</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -32,14 +27,19 @@
                 <tr class="table-light">
                     <th scope="row">@(i + 1)</th>
                     <td>@Model[i].Name</td>
-                    <td>@Model[i].Products.Count</td>
+                    <td>@Model[i].Price</td>
+                    <td>@Model[i].Quantity</td>
+                    <td>@Model[i].Category.Name</td>
                     <td>
-                        <a href="/Category/Edit?categoryId=@Model[i].Id" class="btn btn-success">
+                        <a href="/Product/Details?productId=@Model[i].Id" class="btn btn-info">
+                            <i class="bi bi-pencil-square"></i> Details
+                        </a>
+                        <a href="/Product/Edit?productId=@Model[i].Id" class="btn btn-success">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
                         <button type="button" class="btn btn-primary delete-btn"
-                                data-category-id="@Model[i].Id"
-                                data-category-name="@Model[i].Name"
+                                data-product-id="@Model[i].Id"
+                                data-product-name="@Model[i].Name"
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
                             <i class="bi bi-trash"></i> Delete
@@ -60,7 +60,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete the category <strong id="modalCategoryName"></strong>?
+                Are you sure you want to delete the product <strong id="modalProductName"></strong>?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -75,15 +75,15 @@
     // Attach event listener to all delete buttons
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function () {
-            const categoryId = this.getAttribute('data-category-id');
-            const categoryName = this.getAttribute('data-category-name');
+            const productId = this.getAttribute('data-product-id');
+            const productName = this.getAttribute('data-product-name');
 
-            // Set the category name in the modal
-            document.getElementById('modalCategoryName').textContent = categoryName;
+            // Set the product name in the modal
+            document.getElementById('modalProductName').textContent = productName;
 
-            // Update the delete link to include the categoryId
+            // Update the delete link to include the productId
             const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-            confirmDeleteBtn.href = `/Category/Delete?categoryId=${categoryId}`;
+            confirmDeleteBtn.href = `/Product/Delete?productId=${productId}`;
         });
     });
 </script>
