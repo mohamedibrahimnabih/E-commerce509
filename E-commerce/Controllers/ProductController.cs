@@ -22,36 +22,46 @@ namespace E_commerce.Controllers
             var categories = _dbContext.Categories.ToList();
             ViewData["categories"] = categories;
 
-            return View();
+            return View(new Product());
         }
 
         [HttpPost]
         public IActionResult Create(Product product, IFormFile file)
         {
-            if (file != null && file.Length > 0)
+            ModelState.Remove("Img");
+            ModelState.Remove("Category");
+
+            if(ModelState.IsValid)
             {
-                // Genereate name
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-
-                // Save in wwwroot
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
-
-                using (var stream = System.IO.File.Create(filePath))
+                if (file != null && file.Length > 0)
                 {
-                    file.CopyTo(stream);
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    // Save in db
+                    product.Img = fileName;
                 }
 
-                // Save in db
-                product.Img = fileName;
+                _dbContext.Products.Add(product);
+                _dbContext.SaveChanges();
+
+                //Response.Cookies.Append("message", "Add product successfuly");
+                TempData["message"] = "Add product successfuly";
+
+                return RedirectToAction("Index");
             }
 
-            _dbContext.Products.Add(product);
-            _dbContext.SaveChanges();
-
-            //Response.Cookies.Append("message", "Add product successfuly");
-            TempData["message"] = "Add product successfuly";
-
-            return RedirectToAction("Index");
+            var categories = _dbContext.Categories.ToList();
+            ViewData["categories"] = categories;
+            return View(product);
         }
 
         public IActionResult Edit(int productId)
@@ -70,40 +80,50 @@ namespace E_commerce.Controllers
         [HttpPost]
         public IActionResult Edit(Product product, IFormFile file)
         {
-            var oldProduct = _dbContext.Products.Where(e=>e.Id == product.Id).AsNoTracking().FirstOrDefault();
-            if (file != null && file.Length > 0)
+            ModelState.Remove("Img");
+            ModelState.Remove("Category");
+
+            var oldProduct = _dbContext.Products.Where(e => e.Id == product.Id).AsNoTracking().FirstOrDefault();
+            if (ModelState.IsValid)
             {
-                // Genereate name
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-
-                // Save in wwwroot
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
-
-                using (var stream = System.IO.File.Create(filePath))
+                if (file != null && file.Length > 0)
                 {
-                    file.CopyTo(stream);
+                    // Genereate name
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                    // Save in wwwroot
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    // Delete old img
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", oldProduct.Img);
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+
+                    product.Img = fileName;
+                }
+                else
+                {
+                    product.Img = oldProduct.Img;
                 }
 
-                // Delete old img
-                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", oldProduct.Img);
-                if (System.IO.File.Exists(oldPath))
-                {
-                    System.IO.File.Delete(oldPath);
-                }
-                
-                product.Img = fileName;
+                _dbContext.Products.Update(product);
+                _dbContext.SaveChanges();
+
+                TempData["message"] = "Update product successfuly";
+
+                return RedirectToAction("Index");
             }
-            else
-            {
-                product.Img = oldProduct.Img;
-            }
-
-            _dbContext.Products.Update(product);
-            _dbContext.SaveChanges();
-
-            TempData["message"] = "Update product successfuly";
-
-            return RedirectToAction("Index");
+            product.Img = oldProduct.Img;
+            var categories = _dbContext.Categories.ToList();
+            ViewData["categories"] = categories;
+            return View(product);
         }
 
         public IActionResult Delete(int productId)
@@ -111,6 +131,13 @@ namespace E_commerce.Controllers
             var product = _dbContext.Products.Find(productId);
 
             if (product == null) return RedirectToAction("NotFoundPage", "Home");
+
+            // Delete old img
+            var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", product.Img);
+            if (System.IO.File.Exists(oldPath))
+            {
+                System.IO.File.Delete(oldPath);
+            }
 
             _dbContext.Products.Remove(product);
             _dbContext.SaveChanges();

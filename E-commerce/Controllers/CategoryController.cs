@@ -25,22 +25,27 @@ namespace E_commerce.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            return View(new Category());
         }
 
         [HttpPost]
-        public IActionResult Create(string name)
+        public IActionResult Create(Category category)
         {
-            dbContext.Categories.Add(new()
+            if(ModelState.IsValid)
             {
-                Name = name
-            });
+                dbContext.Categories.Add(new()
+                {
+                    Name = category.Name
+                });
 
-            dbContext.SaveChanges();
+                dbContext.SaveChanges();
 
-            TempData["success"] = "Add Category successfuly";
+                TempData["success"] = "Add Category successfuly";
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(category);
         }
 
         public IActionResult Edit(int categoryId)
@@ -58,20 +63,25 @@ namespace E_commerce.Controllers
         [HttpPost]
         public IActionResult Edit(Category category)
         {
-            dbContext.Categories.Update(new Category
+            if(ModelState.IsValid)
             {
-                Name = category.Name,
-                Id = category.Id
-            });
+                dbContext.Categories.Update(new Category
+                {
+                    Name = category.Name,
+                    Id = category.Id
+                });
 
-            //var category = dbContext.Categories.Find(id);
-            //category.Name = name;
+                //var category = dbContext.Categories.Find(id);
+                //category.Name = name;
 
-            dbContext.SaveChanges();
+                dbContext.SaveChanges();
 
-            TempData["success"] = "Update Category successfuly";
+                TempData["success"] = "Update Category successfuly";
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(category);
         }
 
         public IActionResult Delete(int categoryId)

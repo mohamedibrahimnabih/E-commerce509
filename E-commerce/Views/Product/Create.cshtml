@@ -1,23 +1,31 @@
-﻿<div class="row mb-2">
+﻿@model Product
+
+<div class="row mb-2">
     <h1><a href="/Product/Index"><i class="bi bi-arrow-left"></i></a> Create New Product</h1>
 </div>
 
 <div class="row">
     <form action="/Product/Create" method="post" enctype="multipart/form-data">
         <div class="mb-3">
-            <input type="text" class="form-control" id="productName" name="Name" placeholder="Product Name">
+            <input type="text" class="form-control" id="productName" name="Name" placeholder="Product Name" value="@Model.Name">
+            <span class="text-danger" asp-validation-for="@Model.Name"></span>
         </div>
 
         <div class="mb-3">
-            <input type="text" class="form-control" id="productDescription" name="Description" placeholder="Product Description">
+            <input type="text" class="form-control" id="productDescription" name="Description" placeholder="Product Description" value="@Model.Description">
+            <span class="text-danger" asp-validation-for="@Model.Description"></span>
         </div>
 
         <div class="mb-3">
-            <input type="number" class="form-control" id="productPrice" name="Price" placeholder="Product Price">
+            <input type="number" class="form-control" id="productPrice" name="Price" placeholder="Product Price" value="@Model.Price">
+            <span class="text-danger" asp-validation-for="@Model.Price"></span>
+
         </div>
 
         <div class="mb-3">
-            <input type="file" class="form-control" id="productImg" name="file" placeholder="Product Img" accept="image/*" onchange="previewImage(event)">
+            <input type="file" class="form-control" id="productImg" name="file" placeholder="Product Img" accept="image/*" onchange="previewImage(event)" value="@Model.Img">
+            <span class="text-danger" asp-validation-for="@Model.Img"></span>
+
         </div>
 
         <!-- Image Preview -->
@@ -26,7 +34,9 @@
         </div>
 
         <div class="mb-3">
-            <input type="number" class="form-control" id="productQuantity" name="Quantity" placeholder="Product Quantity">
+            <input type="number" class="form-control" id="productQuantity" name="Quantity" placeholder="Product Quantity" value="@Model.Quantity">
+            <span class="text-danger" asp-validation-for="@Model.Quantity"></span>
+
         </div>
 
         <div class="mb-3">
@@ -36,6 +46,8 @@
                     <option value="@item.Id">@item.Name</option>
                 }
             </select>
+            <span class="text-danger" asp-validation-for="@Model.CategoryId"></span>
+
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
