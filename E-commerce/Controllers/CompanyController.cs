@@ -19,6 +19,7 @@ namespace E_commerce.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Company company)
         {
             if(ModelState.IsValid)
@@ -38,6 +39,7 @@ namespace E_commerce.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(Company company)
         {
             if (ModelState.IsValid)
