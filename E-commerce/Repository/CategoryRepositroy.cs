@@ -1,11 +1,12 @@
 ﻿using E_commerce.Data;
 using E_commerce.Models;
+using E_commerce.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace E_commerce.Repository
 {
-    public class CategoryRepositroy
+    public class CategoryRepositroy : ICategoryRepository
     {
         private ApplicationDbContext _dbContext = new ApplicationDbContext();
 

@@ -1,3 +1,6 @@
+using E_commerce.Repository;
+using E_commerce.Repository.IRepository;
+
 namespace E_commerce
 {
     public class Program
@@ -8,6 +11,8 @@ namespace E_commerce
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepositroy>();
 
             var app = builder.Build();
 

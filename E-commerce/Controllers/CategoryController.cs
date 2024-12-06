@@ -1,6 +1,7 @@
 ﻿using E_commerce.Data;
 using E_commerce.Models;
 using E_commerce.Repository;
+using E_commerce.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,14 @@ namespace E_commerce.Controllers
     {
         //private ApplicationDbContext dbContext = new ApplicationDbContext();
 
-        CategoryRepositroy categoryRepositroy = new CategoryRepositroy();
+        //CategoryRepositroy categoryRepositroy = new CategoryRepositroy();
+
+        ICategoryRepository categoryRepositroy;// = new CategoryRepositroy();
+
+        public CategoryController(ICategoryRepository categoryRepositroy)
+        {
+            this.categoryRepositroy = categoryRepositroy;
+        }
 
         public IActionResult Index()
         {
