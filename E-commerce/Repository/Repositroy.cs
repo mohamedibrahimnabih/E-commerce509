@@ -2,34 +2,43 @@
 using E_commerce.Models;
 using E_commerce.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace E_commerce.Repository
 {
-    public class CategoryRepositroy : ICategoryRepository
+    public class Repositroy<T> : IRepository<T> where T : class
     {
-        private ApplicationDbContext _dbContext = new ApplicationDbContext();
+        private readonly ApplicationDbContext _dbContext;
+        private DbSet<T> _dbSet;
 
-        public void Create(Category category)
+        public Repositroy(ApplicationDbContext dbContext)
         {
-            _dbContext.Categories.Add(category);
+            this._dbContext = dbContext;
+            _dbSet = _dbContext.Set<T>();
+        }
+
+        public void Create(T entity)
+        {
+            _dbSet.Add(entity);
             _dbContext.SaveChanges();
         }
 
-        public void Alter(Category category)
+        public void Alter(T entity)
         {
-            _dbContext.Categories.Update(category);
-            _dbContext.SaveChanges();
-        }
-        public void Delete(Category category)
-        {
-            _dbContext.Categories.Remove(category);
+            _dbSet.Update(entity);
             _dbContext.SaveChanges();
         }
 
-        public IQueryable<Category> Get(Expression<Func<Category, bool>>? filter = null, Expression<Func<Category, object>>[]? includeProps = null, bool tracked = true)
+        public void Delete(T entity)
         {
-            IQueryable<Category> query = _dbContext.Categories;
+            _dbSet.Remove(entity);
+            _dbContext.SaveChanges();
+        }
+
+        public IQueryable<T> Get(Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>[]? includeProps = null, bool tracked = true)
+        {
+            IQueryable<T> query = _dbSet;
 
             if (includeProps != null)
             {
@@ -44,7 +53,7 @@ namespace E_commerce.Repository
                 query = query.Where(filter);
             }
 
-            if(!tracked)
+            if (!tracked)
             {
                 query = query.AsNoTracking();
             }
@@ -52,7 +61,7 @@ namespace E_commerce.Repository
             return query;
         }
 
-        public Category? GetOne(Expression<Func<Category, bool>>? filter)
+        public T? GetOne(Expression<Func<T, bool>>? filter)
         {
             return Get(filter).FirstOrDefault();
         }

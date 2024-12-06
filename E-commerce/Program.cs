@@ -1,5 +1,7 @@
+using E_commerce.Data;
 using E_commerce.Repository;
 using E_commerce.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_commerce
 {
@@ -12,7 +14,11 @@ namespace E_commerce
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddScoped<ICategoryRepository, CategoryRepositroy>();
+            builder.Services.AddDbContext<ApplicationDbContext>(
+                option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                );
+
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             var app = builder.Build();
 
