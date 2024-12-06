@@ -1,5 +1,6 @@
 ﻿using E_commerce.Data;
 using E_commerce.Models;
+using E_commerce.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,11 +8,14 @@ namespace E_commerce.Controllers
 {
     public class CategoryController : Controller
     {
-        private ApplicationDbContext dbContext = new ApplicationDbContext();
+        //private ApplicationDbContext dbContext = new ApplicationDbContext();
+
+        CategoryRepositroy categoryRepositroy = new CategoryRepositroy();
 
         public IActionResult Index()
         {
-            var categories = dbContext.Categories.Include(e => e.Products).ToList();
+            //var categories = dbContext.Categories.Include(e => e.Products).ToList();
+            var categories = categoryRepositroy.Get(null).ToList();
             //List<int> ints = new List<int>();
 
             //foreach (var item in categories)
@@ -33,12 +37,7 @@ namespace E_commerce.Controllers
         {
             if(ModelState.IsValid)
             {
-                dbContext.Categories.Add(new()
-                {
-                    Name = category.Name
-                });
-
-                dbContext.SaveChanges();
+                categoryRepositroy.Create(category);
 
                 TempData["success"] = "Add Category successfuly";
 
@@ -50,9 +49,10 @@ namespace E_commerce.Controllers
 
         public IActionResult Edit(int categoryId)
         {
-            var category = dbContext.Categories.Find(categoryId);
+            //var category = dbContext.Categories.Find(categoryId);
+            var category = categoryRepositroy.GetOne(e => e.Id == categoryId);
 
-            if(category != null)
+            if (category != null)
             {
                 return View(category);
             }
@@ -65,16 +65,10 @@ namespace E_commerce.Controllers
         {
             if(ModelState.IsValid)
             {
-                dbContext.Categories.Update(new Category
-                {
-                    Name = category.Name,
-                    Id = category.Id
-                });
+                categoryRepositroy.Alter(category);
 
                 //var category = dbContext.Categories.Find(id);
                 //category.Name = name;
-
-                dbContext.SaveChanges();
 
                 TempData["success"] = "Update Category successfuly";
 
@@ -86,11 +80,11 @@ namespace E_commerce.Controllers
 
         public IActionResult Delete(int categoryId)
         {
-            var category = dbContext.Categories.Find(categoryId);
+            //var category = dbContext.Categories.Find(categoryId);
+            var category = categoryRepositroy.GetOne(e => e.Id == categoryId);
             if(category != null)
             {
-                dbContext.Categories.Remove(category);
-                dbContext.SaveChanges();
+                categoryRepositroy.Delete(category);
 
                 TempData["success"] = "Delete Category successfuly";
 
