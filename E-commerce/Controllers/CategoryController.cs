@@ -14,8 +14,8 @@ namespace E_commerce.Controllers
 
         public IActionResult Index()
         {
-            //var categories = dbContext.Categories.Include(e => e.Products).ToList();
-            var categories = categoryRepositroy.Get(null).ToList();
+            //var categories = dbContext.Categories.Include(e=>e.Products).ToList();
+            var categories = categoryRepositroy.Get(includeProps: [e => e.Products]).ToList();
             //List<int> ints = new List<int>();
 
             //foreach (var item in categories)

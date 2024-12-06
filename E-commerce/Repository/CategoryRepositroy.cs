@@ -1,5 +1,6 @@
 ﻿using E_commerce.Data;
 using E_commerce.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace E_commerce.Repository
@@ -25,14 +26,29 @@ namespace E_commerce.Repository
             _dbContext.SaveChanges();
         }
 
-        public IQueryable<Category> Get(Expression<Func<Category, bool>>? filter)
+        public IQueryable<Category> Get(Expression<Func<Category, bool>>? filter = null, Expression<Func<Category, object>>[]? includeProps = null, bool tracked = true)
         {
-            if(filter == null)
+            IQueryable<Category> query = _dbContext.Categories;
+
+            if (includeProps != null)
             {
-                return _dbContext.Categories;
+                foreach (var item in includeProps)
+                {
+                    query = query.Include(item);
+                }
             }
 
-            return _dbContext.Categories.Where(filter);
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if(!tracked)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return query;
         }
 
         public Category? GetOne(Expression<Func<Category, bool>>? filter)
