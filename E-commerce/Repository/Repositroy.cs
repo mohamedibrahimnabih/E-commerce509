@@ -61,7 +61,7 @@ namespace E_commerce.Repository
             return query;
         }
 
-        public T? GetOne(Expression<Func<T, bool>>? filter)
+        public T? GetOne(Expression<Func<T, bool>>? filter, Expression<Func<T, object>>[]? includeProps = null, bool tracked = true)
         {
             return Get(filter).FirstOrDefault();
         }

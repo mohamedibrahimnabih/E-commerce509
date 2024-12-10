@@ -1,32 +1,44 @@
 ﻿using E_commerce.Data;
 using E_commerce.Models;
+using E_commerce.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_commerce.Controllers
 {
     public class ProductController : Controller
     {
-        private ApplicationDbContext _dbContext = new ApplicationDbContext();
+        private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
+
+        //private ApplicationDbContext _dbContext = new ApplicationDbContext();
+
+        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)
+        {
+            this._productRepository = productRepository;
+            this._categoryRepository = categoryRepository;
+        }
 
         public IActionResult Index()
         {
-            var products = _dbContext.Products.Include(e=>e.Category).ToList();
+            //var products = _dbContext.Products.Include(e=>e.Category).ToList();
+            var products = _productRepository.Get(includeProps: [e => e.Category]).ToList();
             ViewData["message"] = Request.Cookies["message"];
             return View(products);
         }
 
         public IActionResult Create()
         {
-            var categories = _dbContext.Categories.ToList();
+            var categories = _categoryRepository.Get();
             ViewData["categories"] = categories;
 
             return View(new Product());
         }
 
         [HttpPost]
-        public IActionResult Create(Product product, IFormFile file)
+        public IActionResult Create(Product product, IFormFile? file)
         {
             ModelState.Remove("Img");
             ModelState.Remove("Category");
@@ -50,8 +62,7 @@ namespace E_commerce.Controllers
                     product.Img = fileName;
                 }
 
-                _dbContext.Products.Add(product);
-                _dbContext.SaveChanges();
+                _productRepository.Create(product);
 
                 //Response.Cookies.Append("message", "Add product successfuly");
                 TempData["message"] = "Add product successfuly";
@@ -59,18 +70,18 @@ namespace E_commerce.Controllers
                 return RedirectToAction("Index");
             }
 
-            var categories = _dbContext.Categories.ToList();
+            var categories = _categoryRepository.Get();
             ViewData["categories"] = categories;
             return View(product);
         }
 
         public IActionResult Edit(int productId)
         {
-            var product = _dbContext.Products.Find(productId);
-            
+            var product = _productRepository.GetOne(e => e.Id == productId);
+
             if (product == null) return RedirectToAction("NotFoundPage", "Home");
 
-            var categories = _dbContext.Categories.ToList();
+            var categories = _categoryRepository.Get();
 
             ViewData["categories"] = categories;
 
@@ -78,12 +89,13 @@ namespace E_commerce.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Product product, IFormFile file)
+        public IActionResult Edit(Product product, IFormFile? file)
         {
             ModelState.Remove("Img");
             ModelState.Remove("Category");
 
-            var oldProduct = _dbContext.Products.Where(e => e.Id == product.Id).AsNoTracking().FirstOrDefault();
+            var oldProduct = _productRepository.GetOne(e => e.Id == product.Id, tracked: false);
+
             if (ModelState.IsValid)
             {
                 if (file != null && file.Length > 0)
@@ -113,22 +125,22 @@ namespace E_commerce.Controllers
                     product.Img = oldProduct.Img;
                 }
 
-                _dbContext.Products.Update(product);
-                _dbContext.SaveChanges();
+                _productRepository.Alter(product);
 
                 TempData["message"] = "Update product successfuly";
 
                 return RedirectToAction("Index");
             }
+
             product.Img = oldProduct.Img;
-            var categories = _dbContext.Categories.ToList();
+            var categories = _categoryRepository.Get();
             ViewData["categories"] = categories;
             return View(product);
         }
 
         public IActionResult Delete(int productId)
         {
-            var product = _dbContext.Products.Find(productId);
+            var product = _productRepository.GetOne(e=>e.Id == productId);
 
             if (product == null) return RedirectToAction("NotFoundPage", "Home");
 
@@ -139,8 +151,7 @@ namespace E_commerce.Controllers
                 System.IO.File.Delete(oldPath);
             }
 
-            _dbContext.Products.Remove(product);
-            _dbContext.SaveChanges();
+            _productRepository.Delete(product);
 
             TempData["message"] = "Delete product successfuly";
 
