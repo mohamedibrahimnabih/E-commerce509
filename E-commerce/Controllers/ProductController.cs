@@ -31,7 +31,7 @@ namespace E_commerce.Controllers
 
         public IActionResult Create()
         {
-            var categories = _categoryRepository.Get();
+            var categories = _categoryRepository.Get().ToList();
             ViewData["categories"] = categories;
 
             return View(new Product());
@@ -70,7 +70,7 @@ namespace E_commerce.Controllers
                 return RedirectToAction("Index");
             }
 
-            var categories = _categoryRepository.Get();
+            var categories = _categoryRepository.Get().ToList();
             ViewData["categories"] = categories;
             return View(product);
         }
@@ -81,7 +81,7 @@ namespace E_commerce.Controllers
 
             if (product == null) return RedirectToAction("NotFoundPage", "Home");
 
-            var categories = _categoryRepository.Get();
+            var categories = _categoryRepository.Get().ToList();
 
             ViewData["categories"] = categories;
 
@@ -133,7 +133,7 @@ namespace E_commerce.Controllers
             }
 
             product.Img = oldProduct.Img;
-            var categories = _categoryRepository.Get();
+            var categories = _categoryRepository.Get().ToList();
             ViewData["categories"] = categories;
             return View(product);
         }
