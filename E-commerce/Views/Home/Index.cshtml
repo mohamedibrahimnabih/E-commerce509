@@ -26,3 +26,13 @@
         </div>
     }
 </div>
+
+@section Scripts {
+
+    @if (@TempData["success"] != null)
+    {
+        <script>
+            toastr.success('@TempData["success"]')
+        </script>
+    }
+}

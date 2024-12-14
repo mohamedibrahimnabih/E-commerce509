@@ -1,9 +1,11 @@
 ﻿using E_commerce.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using E_commerce.Models.ViewModels;
 
 namespace E_commerce.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -13,6 +15,7 @@ namespace E_commerce.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<RequestCompnay> RequestCompnaies { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -93,6 +96,5 @@ namespace E_commerce.Data
 
             optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=E-Commerce509;Integrated Security=True;TrustServerCertificate=True");
         }
-
     }
 }

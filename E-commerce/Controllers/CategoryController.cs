@@ -2,11 +2,13 @@
 using E_commerce.Models;
 using E_commerce.Repository;
 using E_commerce.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_commerce.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         //private ApplicationDbContext dbContext = new ApplicationDbContext();
@@ -20,6 +22,7 @@ namespace E_commerce.Controllers
             this.categoryRepositroy = categoryRepositroy;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             //var categories = dbContext.Categories.Include(e=>e.Products).ToList();

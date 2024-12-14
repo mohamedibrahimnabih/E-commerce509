@@ -1,6 +1,8 @@
 using E_commerce.Data;
+using E_commerce.Models;
 using E_commerce.Repository;
 using E_commerce.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_commerce
@@ -18,8 +20,13 @@ namespace E_commerce
                 option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IRequestCompnayRepository, RequestCompnayRepository>();
 
             var app = builder.Build();
 

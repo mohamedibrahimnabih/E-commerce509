@@ -27,16 +27,43 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Management System</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/Category/Index">Category</a>
-                                <a class="dropdown-item" href="/Product/Index">Product</a>
-                                <a class="dropdown-item" href="/Company/Index">Company</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">User</a>
-                            </div>
+                        @if(User.IsInRole("Admin")) {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Management System</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/Category/Index">Category</a>
+                                    <a class="dropdown-item" href="/Product/Index">Product</a>
+                                    <a class="dropdown-item" href="/Company/Index">Company</a>
+                                    <a class="dropdown-item" href="/RequestsComapny/Index">Request Company</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">User</a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav">
+
+                        @if(User.Identity.IsAuthenticated) {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">Welcome @User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else {
+
+                        
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                        </li>
+                        }
+                        
                     </ul>
                 </div>
             </div>
@@ -48,11 +75,32 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - E_commerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <section class="">
+        <!-- Footer -->
+        <footer class="text-center text-dark" style="background-color: #FFFFFF;">
+            <!-- Grid container -->
+            <div class="container p-4 pb-0">
+                <!-- Section: CTA -->
+                <section class="">
+                    <p class="d-flex justify-content-center align-items-center">
+                        <span class="me-3">Register for free</span>
+                        <a asp-action="CreateNewRequest" asp-controller="RequestsComapny" data-mdb-ripple-init type="button" class="btn btn-outline-primary btn-rounded">
+                            Sign up!
+                        </a>
+                    </p>
+                </section>
+                <!-- Section: CTA -->
+            </div>
+            <!-- Grid container -->
+            <!-- Copyright -->
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                © 2020 Copyright:
+                <a class="text-dark" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+            </div>
+            <!-- Copyright -->
+        </footer>
+        <!-- Footer -->
+    </section>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
