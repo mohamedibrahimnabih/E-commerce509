@@ -65,5 +65,10 @@ namespace E_commerce.Repository
         {
             return Get(filter).FirstOrDefault();
         }
+
+        public void Commit()
+        {
+            _dbContext.SaveChanges();
+        } 
     }
 }

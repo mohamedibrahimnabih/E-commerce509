@@ -1,4 +1,4 @@
-﻿using E_commerce.Models;
+﻿    using E_commerce.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using E_commerce.Models.ViewModels;
@@ -16,6 +16,7 @@ namespace E_commerce.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<RequestCompnay> RequestCompnaies { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

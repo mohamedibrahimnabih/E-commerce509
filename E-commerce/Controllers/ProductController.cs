@@ -21,12 +21,20 @@ namespace E_commerce.Controllers
             this._categoryRepository = categoryRepository;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? query = null, int pageNumber = 1)
         {
+            var products = _productRepository.Get(includeProps: [e => e.Category]);
+            if (query != null)
+            {
+                query = query.Trim();
+                products = products.Where(e => e.Name.Contains(query) || e.Description.Contains(query));
+            }
+
+            products = products.Skip((pageNumber - 1) * 3).Take(3);
+
             //var products = _dbContext.Products.Include(e=>e.Category).ToList();
-            var products = _productRepository.Get(includeProps: [e => e.Category]).ToList();
             ViewData["message"] = Request.Cookies["message"];
-            return View(products);
+            return View(products.ToList());  
         }
 
         public IActionResult Create()

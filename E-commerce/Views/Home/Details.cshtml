@@ -1,4 +1,5 @@
-﻿<div class="card mb-3 col-12">
+﻿
+<div class="card mb-3 col-12">
     <div class="row g-0">
         <div class="col-md-4">
             <img src="~/images/@Model.Img" class="img-fluid rounded-start" alt="...">
@@ -16,6 +17,15 @@
                     <li>item 4</li>
                 </ul>
                 <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <form asp-action="AddToCart" asp-controller="Cart" class="d-flex">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+                            <input type="number" name="count" class="form-control mx-2" placeholder="Count">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

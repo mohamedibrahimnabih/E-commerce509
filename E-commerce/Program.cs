@@ -2,8 +2,10 @@ using E_commerce.Data;
 using E_commerce.Models;
 using E_commerce.Repository;
 using E_commerce.Repository.IRepository;
+using E_commerce.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace E_commerce
 {
@@ -16,6 +18,11 @@ namespace E_commerce
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
+
             builder.Services.AddDbContext<ApplicationDbContext>(
                 option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
@@ -27,6 +34,9 @@ namespace E_commerce
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IRequestCompnayRepository, RequestCompnayRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
             var app = builder.Build();
 
